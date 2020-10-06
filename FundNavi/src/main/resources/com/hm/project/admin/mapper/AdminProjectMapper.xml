@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.admin.mapper.AdminProjectMapper">
+
+	<select id="adminProjectGet" resultType="com.hm.project.domain.ProjectVO">
+		<![CDATA[
+		SELECT	project_num, 
+				category, 
+				simple_content,
+				current_invest,
+				project_end,
+				company
+		FROM	pr_project
+		WHERE	project_distinct = 'ongoing'
+		AND		project_start < SYSDATE
+		]]>
+	</select>
+	
+	<update id="ProjectStarting">
+		 UPDATE	 pr_project
+		 SET	 project_distinct = 'ongoing'
+		 WHERE	 project_num = #{project_num} 
+	</update>
+	
+	<update id="ProjectStopping">
+		 UPDATE	 pr_project
+		 SET	 project_distinct = 'stop'
+		 WHERE	 project_num = #{project_num} 
+	</update>
+	
+	<update id="ProjectDeleting">
+		 	DELETE	
+			FROM	pr_project
+			WHERE	project_num = #{project_num}
+	</update>
+	
+	<select id="adminOpenProjectGet" resultType="com.hm.project.domain.ProjectVO">
+		<![CDATA[
+		SELECT	project_num, 
+				category, 
+				simple_content,
+				project_start,
+				company
+		FROM	pr_project
+		WHERE	project_distinct = 'ongoing'
+		AND		project_start > SYSDATE
+		]]>
+	</select>
+	
+	<select id="adminEndProjectGet" resultType="com.hm.project.domain.ProjectVO">
+		<![CDATA[
+		SELECT	project_num, 
+				category, 
+				simple_content,
+				current_invest,
+				company,
+				(current_invest/achive_invest)*100 achive
+		FROM	pr_project
+		WHERE	project_end < SYSDATE
+		]]>
+	</select>
+	
+	<select id="adminRequestProjectGet" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	project_num, 
+				category, 
+				simple_content,
+				project_start,
+				company,
+				achive_invest
+		FROM	pr_project
+		WHERE	project_distinct = 'standBy'
+	</select>
+	
+	<select id="adminRemoveRequestProjectGet" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	project_num, 
+				category, 
+				simple_content,
+				project_start,
+				project_end,
+				company,
+				current_invest,
+				achive_invest
+		FROM	pr_project
+		WHERE	project_distinct = 'remove_standBy'
+	</select>
+	
+	<update id="ProjectStandBying">
+		 UPDATE	 pr_project
+		 SET	 project_distinct = 'ongoing'
+		 WHERE	 project_num = #{project_num} 
+	</update>
+	
+	<select id="RequestProject" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	project_num
+				simple_content, 
+				project_record, 
+				company, 
+				phone, 
+				category,
+				detail_content,
+				project_start,
+				project_end, 
+				achive_invest,
+				attach_1
+		FROM	pr_project
+		WHERE	project_num = #{project_num}
+	</select>
+	
+	<select id="adminCommentGet" resultType="com.hm.project.domain.RippleVO">
+		SELECT	RIP.ripple_num,
+				PRO.simple_content,
+				RIP.userid,
+				RIP.content,
+				RIP.reg_date
+		FROM	pr_RIPPLE RIP,
+				pr_PROJECT PRO
+		WHERE	RIP.project_num = PRO.project_num
+		ORDER BY reg_date DESC
+	</select>
+	
+	<select id="adminRRippleGet" resultType="com.hm.project.domain.RippleRippleVO">
+		SELECT	userid, 
+				ripple_num, 
+				ripple_ripple_num,
+				content, 
+				reg_date
+		FROM	pr_RIPPLE_RIPPLE
+		ORDER BY	reg_date DESC
+	</select>
+	
+	<select id="projectDashboardCountGet" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	COUNT(project_num) countProject,
+				COUNT(DISTINCT userid) countUser
+		FROM	pr_project
+	</select>
+	
+	<select id="projectDashboardCategoryRankGet" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	pro.category
+		FROM	
+			(	SELECT	DISTINCT CATEGORY, 
+						RANK() OVER(ORDER BY CATEGORY DESC) rank
+				FROM	pr_PROJECT  ) pro
+		WHERE	pro.RANK = 1
+	</select>
+	
+	<select id="projectDashboardProjectRankGet" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	rownum, 
+				PRO.category,
+				PRO.simple_content, 
+				PRO.current_invest, 
+				PRO.project_end, 
+				PRO.company
+		FROM	pr_PROJECT PRO,
+			(SELECT AA.CATEGORY, 
+					AA.NUM,
+					AA.PROJECT_NUM, 
+					AA.CURRENT_INVEST
+			FROM	
+				(
+				SELECT	ROW_NUMBER() OVER(PARTITION BY a.CATEGORY ORDER BY a.CURRENT_INVEST DESC) NUM,
+						a.PROJECT_NUM,
+						a.CATEGORY,
+						a.CURRENT_INVEST
+				FROM   pr_PROJECT a
+				ORDER BY a.CURRENT_INVEST DESC
+				) AA
+			WHERE AA.NUM = 1) SUB
+		WHERE	SUB.PROJECT_NUM = PRO.PROJECT_NUM
+	</select>
+	
+	<select id="investCountProjectCount" resultType="com.hm.project.domain.ProjectVO">
+		SELECT	COUNT(project_num) cnt,
+				SUM(CURRENT_INVEST) inv
+		FROM	pr_PROJECT
+		WHERE	CURRENT_INVEST > 0
+	</select>
+	
+	<delete id="commentDelete">
+		DELETE	
+		FROM	pr_ripple
+		WHERE	ripple_num = #{ripple_num}
+	</delete>
+	
+	<delete id="RRippleDelete">
+		DELETE	
+		FROM	pr_ripple_ripple
+		WHERE	ripple_ripple_num = #{ripple_ripple_num}
+	</delete>
+</mapper>

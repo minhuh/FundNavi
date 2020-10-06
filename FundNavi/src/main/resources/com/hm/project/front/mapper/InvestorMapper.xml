@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.front.mapper.InvestorMapper">
+
+	<resultMap type="com.hm.project.domain.InvestorVO" id="InvestorMap">
+		
+		<id property="investor_num" column="investor_num"/>
+		<result property="investor_num" column="investor_num"/>
+		<result property="project_num" column="project_num"/>
+		<result property="amount" column="amount"/>
+		<result property="score" column="score"/>
+		<result property="job" column="job"/>
+		<result property="userid" column="userid"/>
+		
+	<collection property="authList" resultMap="authMap"></collection> 
+	
+	</resultMap>
+	
+	<resultMap type="com.hm.project.domain.AuthVO" id="authMap">
+		<result property="userid" column="userid"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+
+
+	<select id="investor_read" resultType="com.hm.project.domain.InvestorVO">
+	SELECT	*
+	FROM	pr_investor
+	WHERE	project_num = #{project_num}
+	order by invest_date desc
+	</select>
+	
+	<select id="myPageProject" resultType="com.hm.project.domain.InvestorVO">
+		<![CDATA[
+			SELECT	pj.simple_content, 
+					iv.amount, 
+					iv.invest_date
+			FROM	pr_project pj, 
+					pr_investor iv
+			WHERE	iv.userid = #{userid}
+			AND		pj.project_num = iv.project_num
+		]]>
+	</select>
+	
+	<select id="getList" resultType="com.hm.project.domain.InvestorVO">
+	<![CDATA[
+		SELECT 	i.score,
+				i.userid,
+				i.amount,
+				i.invest_date,
+				i.job,
+	  			m.nickname,
+	  			m.profile_image
+		FROM   	pr_investor i,
+	   			pr_member m
+		WHERE   project_num = #{project_num}
+		AND     i.userid = m.userid
+		]]>
+	</select>
+	
+	<insert id="insert">
+		INSERT	INTO	pr_investor(
+							investor_num,
+							project_num,
+							amount,
+							score,
+							job,
+							userid 
+						)
+		VALUES(
+				#{investor_num},
+				#{project_num},
+				#{amount},
+				#{score},
+				#{job},
+				#{userid}
+		)
+	</insert>
+	
+	<insert id="funding">
+		INSERT	INTO	pr_investor(
+							investor_num,
+							project_num,
+							amount,
+							score,
+							job,
+							userid 
+						)
+		VALUES(
+				SEQ_INVESTOR.NEXTVAL,
+				#{project_num},
+				#{amount},
+				#{score},
+				#{job},
+				#{userid}
+		)
+	</insert>
+	<update id="update_current">
+		UPDATE	pr_project
+		SET		current_invest = current_invest + #{amount}
+		WHERE	project_num = #{project_num}
+	</update>
+	
+	
+	
+	<update id="update">
+		UPDATE	pr_investor
+		SET		investor_num = #{investor_num},
+				project_num = #{project_num},
+				amount = #{amount},
+				score = #{score},
+				job = #{job},
+				userid = #{userid}
+		WHERE	userid = #{userid}
+	</update>
+	
+</mapper>

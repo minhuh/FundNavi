@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.front.mapper.RippleMapper"> 
+<!-- 인터페이스와 이름동일 -->
+	
+	<insert id="insert" >
+	
+		INSERT INTO pr_ripple(
+								ripple_num, 
+								project_num, 
+								content,
+								userid							
+								)
+						  
+						  VALUES(
+								 SEQ_RIPPLE.NEXTVAL,
+			  					 #{project_num},
+			  					 #{content},
+			  					 #{userid}				 
+			   					 )
+			   					
+	</insert>
+	
+	
+	
+	<select id="read" resultType="com.hm.project.domain.RippleVO">
+		SELECT * FROM pr_ripple 
+		WHERE userid = #{userid}
+	</select>
+	
+
+	<select id="read2" resultType="com.hm.project.domain.RippleVO">
+		SELECT * FROM pr_ripple 
+		WHERE project_num = #{project_num}
+		order by reg_date desc
+	</select>
+	
+	<delete id="remove">
+		DELETE FROM pr_ripple WHERE ripple_num = #{ripple_num}
+	</delete>
+	
+	<update id="update">
+		UPDATE pr_ripple 
+		SET content = #{content}, reg_date = sysdate
+		WHERE  ripple_num = #{ripple_num}
+	</update>
+	
+	<select id="getListWithPaging"
+		resultType="com.hm.project.domain.RippleVO">
+		<![CDATA[
+		SELECT 	ripple_num,
+		 		project_num,
+			  	userid,
+			  	reg_date,
+			  	content
+		FROM 	(
+				SELECT /*+index(pr_ripple xpkpr_ripple */
+				 rownum rn,
+				 ripple_num,
+				 project_num,
+				 userid,
+				 reg_date,
+				 content
+				FROM pr_ripple
+				WHERE 	project_num = #{project_num}
+				AND	 rownum <= #{cri.pageNum} * #{cri.amount}
+			   ) WHERE rn > (#{cri.pageNum} -1) * #{cri.amount}
+		]]>
+	</select>
+	
+	<select id="getList" resultType="com.hm.project.domain.RippleVO">
+	<![CDATA[
+		SELECT * FROM pr_ripple WHERE project_num = #{project_num}
+		]]>
+	</select>
+
+
+	<select id="getCountByBno" resultType="int">
+	<![CDATA[
+	SELECT COUNT(ripple_num)
+	FROM   pr_ripple
+	WHERE  project_num = #{project_num}
+	]]>
+	</select>
+	
+</mapper>

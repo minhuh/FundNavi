@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.admin.mapper.AdminMemberMapper">
+
+	<select id="adminUserGet" resultType="com.hm.project.domain.MemberVO">
+		<![CDATA[
+		SELECT	userid,
+				name,
+				nickname,
+				phone,
+				address,
+				NVL2(job,job,'無職') nowJob,
+				NVL2(account,account,'無し') acc
+      	FROM	pr_member
+      	]]>
+	</select>
+
+	<select id="investorCountGet" resultType="com.hm.project.domain.MemberVO">
+		SELECT	COUNT(userid) id
+		FROM	pr_member
+		WHERE	account IS NOT NULL
+	</select>
+	
+	<select id="investRankGet" resultType="com.hm.project.domain.MemberVO">
+		SELECT	rownum,
+				MEM.userid,
+				MEM.name,
+				JO.S su
+		FROM	pr_MEMBER MEM,
+				(
+				SELECT	userid, SUM(AMOUNT) S
+				FROM	pr_INVESTOR
+				GROUP BY USERID
+				ORDER BY S DESC
+				)JO
+		WHERE	JO.userid = MEM.userid
+	</select>
+</mapper>

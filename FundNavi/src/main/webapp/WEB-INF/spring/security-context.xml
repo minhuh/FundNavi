@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 인증관련 빈 설정 -->
+	<bean id="customLoginSuccess" class="com.hm.project.security.CustomLoginSuccessHandler"></bean>
+	<bean id="CustomLogoutSuccessHandler" class="com.hm.project.security.CustomLogoutSuccessHandler"></bean>
+	<bean id="customAccessDenied" class="com.hm.project.security.CustomAccessDeniedHandler"></bean>
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	<bean id="customUserDetailsService"	class="com.hm.project.security.CustomUserDetailsService"></bean>
+	
+	<security:http>
+			
+		<security:intercept-url	pattern="/front/all" access="permitAll" /> <!--role_member라는 권한을 가지고 있으면. 672  -->
+		<security:intercept-url	pattern="/front/all" access="hasRole('ROLE_USER')" />
+		
+		<security:form-login login-page="/login" authentication-success-handler-ref="customLoginSuccess" />
+		<security:logout logout-url="/logout" invalidate-session="true" success-handler-ref="CustomLogoutSuccessHandler"/>
+		
+		<security:remember-me data-source-ref="dataSource" token-validity-seconds="604800" />
+		
+		<security:access-denied-handler ref="customAccessDenied" />
+		
+	</security:http>
+	
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserDetailsService">
+			<security:password-encoder ref="bcryptPasswordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+	
+</beans>

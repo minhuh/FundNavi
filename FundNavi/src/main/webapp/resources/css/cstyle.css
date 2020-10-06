@@ -1,0 +1,399 @@
+.nButton {
+  font-weight: bold;
+  text-decoration: none;
+  font-family: Arial;
+  -webkit-box-shadow: inset #31839c 0px 5px 8px -1px, #d6d6d6 1px 3px 2px;
+  background: #31859c;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#31859c', endColorstr='#31839c');
+  background: -webkit-linear-gradient(#31859c, #31839c);
+  background: -ms-linear-gradient(#31859c, #31839c);
+  background: linear-gradient(#31859c, #31839c);
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 20%;
+  color: #ffffff;
+  width: 20%;
+  height: 5%;
+  padding: 13px;
+  border-color: #659dab;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.nButton:active {
+  box-shadow: inset #31839c 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  o-box-shadow: inset #31839c 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  -moz-box-shadow: inset #31839c 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  -webkit-box-shadow: inset #31839c 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  position: relative;
+  top: 3px;
+}
+
+.nButton:hover {
+  background: #31839c;
+  background: -o-linear-gradient(90deg, #31839c, #31859c);
+  background: -moz-linear-gradient(center top, #31839c 5%, #31859c 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #31839c), color-stop(1, #31859c));
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#31839c', endColorstr='#31859c');
+  background: -webkit-linear-gradient(#31839c, #31859c);
+  background: -ms-linear-gradient(#31839c, #31859c);
+  background: linear-gradient(#31839c, #31859c);
+}
+
+.myPageButton {
+  font-weight: bold;
+  text-decoration: none;
+  font-family: Arial;
+  background: #fff;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#31859c', endColorstr='#31839c');
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 20%;
+  color: #939393;
+  width: 20%;
+  height: 5%;
+  padding: 13px;
+  border-color: #659dab;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.myPageButton:active {
+  box-shadow: inset rgba(#31839c, .32) 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  o-box-shadow: inset rgba(#31839c, .32) 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  -moz-box-shadow: inset rgba(#31839c, .32) 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  -webkit-box-shadow: inset rgba(#31839c, .32) 0px 5px 8px -1px, #d6d6d6 1px 0 2px;
+  position: relative;
+  top: 3px
+}
+
+.myPageButton:hover {
+  background: `#48a3bf;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#31839c', endColorstr='#31859c');
+}
+
+
+.custom-select.is-valid, .was-validated .custom-select:valid {
+  border-color: #28a745;
+  padding-right: calc((1em + .75rem) * 3 / 4 + 1.75rem);
+  background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e") #fff no-repeat center right 1.75rem/calc(.75em + .375rem) calc(.75em + .375rem)
+}
+
+.custom-select.is-valid:focus, .was-validated .custom-select:valid:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 .2rem rgba(40, 167, 69, .25)
+}
+
+.custom-select.is-valid~.valid-feedback, .custom-select.is-valid~.valid-tooltip, .was-validated .custom-select:valid~.valid-feedback, .was-validated .custom-select:valid~.valid-tooltip {
+  display: block
+}
+
+.custom-select.is-invalid, .was-validated .custom-select:invalid {
+  border-color: #dc3545;
+  padding-right: calc((1em + .75rem) * 3 / 4 + 1.75rem);
+  background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px, url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23dc3545' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23dc3545' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E") #fff no-repeat center right 1.75rem/calc(.75em + .375rem) calc(.75em + .375rem)
+}
+
+.custom-select.is-invalid:focus, .was-validated .custom-select:invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 .2rem rgba(220, 53, 69, .25)
+}
+
+.custom-select.is-invalid~.invalid-feedback, .custom-select.is-invalid~.invalid-tooltip, .was-validated .custom-select:invalid~.invalid-feedback, .was-validated .custom-select:invalid~.invalid-tooltip {
+  display: block
+}
+
+.form-inline .custom-select, .form-inline .input-group {
+  width: auto
+}
+
+.input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control, .input-group>.form-control-plaintext {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-bottom: 0
+}
+
+.input-group>.custom-file+.custom-file, .input-group>.custom-file+.custom-select, .input-group>.custom-file+.form-control, .input-group>.custom-select+.custom-file, .input-group>.custom-select+.custom-select, .input-group>.custom-select+.form-control, .input-group>.form-control+.custom-file, .input-group>.form-control+.custom-select, .input-group>.form-control+.form-control, .input-group>.form-control-plaintext+.custom-file, .input-group>.form-control-plaintext+.custom-select, .input-group>.form-control-plaintext+.form-control {
+  margin-left: -1px
+}
+
+.input-group>.custom-file .custom-file-input:focus~.custom-file-label, .input-group>.custom-select:focus, .input-group>.form-control:focus {
+  z-index: 3
+}
+
+.input-group>.custom-select:not(:last-child), .input-group>.form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0
+}
+
+.input-group>.custom-select:not(:first-child), .input-group>.form-control:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0
+}
+
+.input-group-lg>.custom-select, .input-group-lg>.form-control:not(textarea) {
+  height: calc(1.5em + 1rem + 2px)
+}
+
+.input-group-lg>.custom-select, .input-group-lg>.form-control, .input-group-lg>.input-group-append>.btn, .input-group-lg>.input-group-append>.input-group-text, .input-group-lg>.input-group-prepend>.btn, .input-group-lg>.input-group-prepend>.input-group-text {
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem
+}
+
+.input-group-sm>.custom-select, .input-group-sm>.form-control:not(textarea) {
+  height: calc(1.5em + .5rem + 2px)
+}
+
+.input-group-sm>.custom-select, .input-group-sm>.form-control, .input-group-sm>.input-group-append>.btn, .input-group-sm>.input-group-append>.input-group-text, .input-group-sm>.input-group-prepend>.btn, .input-group-sm>.input-group-prepend>.input-group-text {
+  padding: .25rem .5rem;
+  font-size: .875rem;
+  line-height: 1.5;
+  border-radius: .2rem
+}
+
+.input-group-lg>.custom-select, .input-group-sm>.custom-select {
+  padding-right: 1.75rem
+}
+
+.custom-select {
+  display: inline-block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem 1.75rem .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  vertical-align: middle;
+  background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right .75rem center/8px 10px;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none
+}
+
+.custom-select:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25)
+}
+
+.custom-select:focus::-ms-value {
+  color: #495057;
+  background-color: #fff
+}
+
+.custom-select[multiple], .custom-select[size]:not([size="1"]) {
+  height: auto;
+  padding-right: .75rem;
+  background-image: none
+}
+
+.custom-select:disabled {
+  color: #6c757d;
+  background-color: #e9ecef
+}
+
+.custom-select::-ms-expand {
+  display: none
+}
+
+.custom-select-sm {
+  height: calc(1.5em + .5rem + 2px);
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+  padding-left: .5rem;
+  font-size: .875rem
+}
+
+.custom-select-lg {
+  height: calc(1.5em + 1rem + 2px);
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  font-size: 1.25rem
+}
+
+body {
+  position: relative;
+}
+
+ul.nav-pills {
+  top: 50%;
+}
+
+div.col-8 div {
+  height: 20%;
+}
+
+.jumboLabel {
+  font-size: 30px;
+  color: #2fdab8;
+  margin-left: 40%;
+}
+
+.writeProject_3_background {
+  margin-top: 5px;
+  padding: 2%;
+  background-color: rgba(244, 240, 244);
+}
+
+.setSize10 {
+  width: 10%;
+  margin-left: 45%;
+  margin-right: 45%;
+}
+
+.setSize20 {
+  width: 20%;
+  margin-left: 40%;
+  margin-right: 40%;
+}
+
+.setSize30 {
+  width: 30%;
+  margin-left: 35%;
+  margin-right: 35%;
+}
+
+.setSize40 {
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
+.setSize50 {
+  width: 50%;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+.setSize60 {
+  width: 60%;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.setSize70 {
+  width: 70%;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.setSize80 {
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.setSize90 {
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.setSize100 {
+  width: 100%;
+}
+
+.sectionLabel {
+  font-size: 30px;
+  font-weight: 300;
+}
+
+.aboutLabel {
+  font-weight: 800;
+}
+
+.gumtoING {
+  color: rgb(0, 176, 80);
+}
+
+.gumtoRefuse {
+  color: rgb(149, 55, 53);
+  font-family: fantasy;
+}
+
+/* profileEdit.html */
+.cButton{
+  width: 20%;
+  margin-left: 20%;
+  margin-right: 20%;
+  border: 1px;
+  border-style:ridge;
+  padding: 2% 6%;
+  border-color: #31859c;
+}
+
+.myPageEditBtnClass{
+  margin-top: 5%;
+}
+
+.recentInventProject{
+  margin-top: 10%;
+}
+
+.recentInventProjectTitle{
+  border:1px ridge;
+  width: 80%;
+}
+
+.simpleIntroLabel{
+  margin-top: 10%;
+}
+
+.div_InterestCategory{
+  margin-top: 10%;
+}
+
+
+/* myPage.html */
+
+.mypageLinkProject {
+  color: rgb(10, 215, 135);
+  font-weight: 800;
+}
+
+.mypageLinkEditBtn {
+  font-family: Arial;
+  background: #ffffff;
+  line-height: 30px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 80%;
+  color: #999999;
+  margin-top: 3%;
+  width: 18%;
+  height: 17%;
+  padding: 12px;
+  text-shadow: #c7c7c7 0px 1px 0px;
+  border-color: rgba(#000, .24);
+  border-width: 2px;
+  border-style: solid;
+}
+
+.mypageTusaLabel {
+  margin-left: 3%;
+  margin-top: 5%;
+  font-size: 22px;
+  font-weight: 800;
+  color: rgb(10, 215, 135);
+}
+
+.hiddenMsg{
+  margin-left: 30%;
+  margin-right: 30%;
+  /* visibility: visible; */
+}

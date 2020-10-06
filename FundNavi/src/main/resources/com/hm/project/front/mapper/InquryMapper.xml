@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.front.mapper.InquryMapper">
+	
+	<resultMap type="com.hm.project.domain.InquryVO" id="inquryMap">
+      <id property="userid" column="userid"/>
+      <result property="userid" column="userid"/>
+      <result property="inqury_num" column="inqury_num"/>
+      <result property="attach" column="attach"/>
+      <result property="content" column="content"/>
+      <result property="ripple_content" column="ripple_content"/>
+      <result property="ripple_check" column="ripple_check"/>
+      <result property="title" column="title"/>
+      <collection property="inquryList" resultMap="inquryMap">
+      </collection> 
+   </resultMap>
+   
+     <sql id = "criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item= 'type' collection = "typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							simple_content like '%' ||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							category like '%' ||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							company like '%' ||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+   
+     <select id="getListWithPaging" resultType="com.hm.project.domain.InquryVO">
+		<![CDATA[
+		SELECT inqury_num,
+			   title,
+			   userid,
+			   reg_date,
+			   ripple_check
+	    FROM (
+	    	  SELECT /*+INDEX_DESC(pr_inqury xpkpr_inqury) */
+	    	   rownum rn,
+	    	   inqury_num,
+			   title,
+			   userid,
+			   reg_date,
+			   ripple_check
+	    	  FROM pr_inqury
+	    	  WHERE
+		]]>
+		<include refid = "criteria"></include>
+		<![CDATA[
+			rownum <= #{pageNum} * #{amount}
+			)
+		WHERE rn > (#{pageNum} -1) * #{amount}
+		]]>
+	</select>
+   
+     <select id="getList" resultType="com.hm.project.domain.InquryVO">
+	<![CDATA[
+		SELECT * FROM pr_inqury WHERE inqury_num > 0
+		]]>
+	</select>
+	
+	<insert id="insert">
+	
+	    <selectKey keyProperty="inqury_num" order="BEFORE"
+			resultType="long">
+			SELECT SEQ_INQURY.NEXTVAL FROM dual
+		</selectKey>
+		
+		INSERT INTO pr_inqury(
+		                         inqury_num,
+		                         userid,
+		                         title,
+						         content)
+		VALUES (#{inqury_num},
+		        #{userid},
+		        #{title},
+		        #{content})
+	</insert>
+	
+	<update id="update">
+		UPDATE pr_inqury 
+		SET    inqury_num = #{inqury_num},
+		       ripple_content = #{ripple_content},
+		       ripple_date = sysdate,
+		       ripple_check = #{ripple_check}
+		WHERE  inqury_num = #{inqury_num}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM pr_inqury WHERE inqury_num = #{inqury_num}
+	</delete>
+	
+	<update id="InquryDeleting">
+		 	DELETE	
+			FROM	pr_inqury
+			WHERE	inqury_num = #{inqury_num}
+	</update>
+	
+	<select id="read" resultType = "com.hm.project.domain.InquryVO">
+		SELECT * 
+		FROM   pr_inqury 
+		WHERE  inqury_num = #{inqury_num}
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*) 
+		FROM pr_inqury
+		WHERE inqury_num > 0
+	</select>
+	
+</mapper>
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.front.mapper.RippleRippleMapper"> <!-- 인터페이스와 이름동일 -->
+	
+	<insert id = "insert">
+	
+		INSERT INTO pr_ripple_ripple(
+								ripple_ripple_num,
+								ripple_num, 
+								project_num,
+								content,
+								userid)
+		VALUES(SEQ_RIPPLE_RIPPLE.NEXTVAL,
+			   #{ripple_num},
+			   #{project_num},
+			   #{content}, 
+			   #{userid})
+	
+	</insert>
+	
+	<select id="read" resultType="com.hm.project.domain.RippleRippleVO">
+		SELECT * FROM pr_ripple_ripple
+		WHERE  ripple_ripple_num = #{ripple_ripple_num}
+	</select>
+	
+	<delete id="delete">
+		DELETE FROM pr_ripple_ripple 
+		WHERE ripple_ripple_num = #{ripple_ripple_num}
+	</delete>
+	
+	<update id="update">
+		UPDATE pr_ripple_ripple
+		SET content = #{content}, 
+		    reg_date = sysdate
+		WHERE  ripple_ripple_num = #{ripple_ripple_num}
+	</update>
+	
+	<select id="getListWithPaging"
+				resultType="com.hm.project.domain.RippleRippleVO">
+		SELECT  ripple_ripple_num, 
+				project_num, 
+				ripple_num,
+				content,
+				userid,
+				reg_date
+		FROM	pr_ripple_ripple
+		WHERE	ripple_num = #{ripple_num}
+		ORDER	BY ripple_ripple_num ASC
+	</select>
+</mapper>

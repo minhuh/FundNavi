@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.admin.mapper.AdminNoticeMapper"> <!-- 인터페이스와 이름동일 -->
+	<!-- getListWithPaging에서 where에 include해서 이 코드 불러오기도 가능 -->
+	<sql id = "criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item= 'type' collection = "typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							title like '%' ||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%' ||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%' ||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql> 
+
+
+	<!-- 크다작다 할때에는 CDATA를 꼭 넣어야함  >이런표시가 닫는걸로 인식해버림 7번라인 -->
+	<select id="getList" resultType="com.hm.project.domain.NoticeVO"><!--id이름 중복x, resultType이름 메소드 이름과 동일 -->
+	<!-- id값을 보고 이름같기 때문에 이 코드 호출가능 mybtis가 알아서 불러줌 -->
+	<![CDATA[
+		SELECT * 
+		FROM pr_notice 
+		WHERE notice_num > 0 
+		]]>
+	</select>
+
+	<select id="getListWithPaging" resultType="com.hm.project.domain.NoticeVO">
+		<![CDATA[
+		SELECT notice_num,
+			   title,
+			   content,   
+			   reg_date,
+			   attach
+	    FROM (
+	    	  SELECT /*+INDEX_DESC(pr_notice xpkpr_notice) */
+	    	  	rownum rn,
+	    	  	notice_num,
+	    	  	title,
+	    	  	content,	    	  	
+	    	  	reg_date,
+	    	  	attach
+	    	  FROM pr_notice
+	    	  WHERE rownum <= 30 )
+		WHERE rn > 1
+		]]>
+	</select>
+	 
+	
+
+	<insert id="insert">
+	<![CDATA[
+		INSERT INTO pr_notice(	 notice_num,
+								 title,								 
+								 content,
+								 attach,
+								 reg_date															 
+								)
+		VALUES (
+				 SEQ_NOTICE.NEXTVAL,
+				 #{title},
+				 #{content},
+				 #{attach},
+				 sysdate				 				 				 
+				 )
+	]]>			 
+	</insert><!-- 마이바에서 getter를 불러서 넣어줌 -->
+	<!-- #은 mybatist문법  Preparestmt(?) 에서 ?에  setTitle()이렇게 하나하나 값넣었던거랑 같음 -->
+	
+	<insert id="insertSelectKey">
+
+		<selectKey keyProperty="notice_num" order="BEFORE"
+			resultType="long">
+			SELECT SEQ_NOTICE.NEXTVAL FROM dual
+		</selectKey>
+	<!-- 컨트롤 쉬프트 x = 대문자로 변환, 컨트롤 쉬프트 y 소문자 변환 -->
+	<![CDATA[
+		INSERT INTO pr_notice(
+								 notice_num,
+								 title,								 
+								 content,
+								 attach,
+								 reg_date
+								)
+		VALUES (
+				 SEQ_NOTICE.NEXTVAL,
+				 #{title},
+				 #{content},
+				 #{attach},
+				 sysdate
+				 )
+				 ]]>
+	</insert>
+	
+	
+	<!-- select -->
+	<select id="read" resultType = "com.hm.project.domain.NoticeVO">
+		SELECT * FROM pr_notice where notice_num = #{notice_num}
+	</select>
+	
+	<!-- delete -->
+	<delete id="delete">
+		delete from pr_notice where notice_num = #{notice_num}
+	</delete>
+	
+	<!-- update -->
+	<update id="update">
+		UPDATE pr_notice SET title = #{title},
+							  content = #{content}
+							  WHERE notice_num = #{notice_num}
+	</update>
+	
+	
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*) 
+		FROM pr_notice 
+		WHERE notice_num > 0
+	</select>
+	
+	
+	
+	
+</mapper>

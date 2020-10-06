@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hm.project.front.mapper.ProjectMapper"> <!-- 인터페이스와 이름동일 -->
+		<!-- getListWithPaging에서 where에 include해서 이 코드 불러오기도 가능 -->
+	<sql id = "criteria">
+		<trim prefix="AND (" suffix=")" prefixOverrides="OR">
+			<foreach item= 'type' collection = "typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							simple_content like '%' ||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							category like '%' ||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							userid like '%' ||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<!-- 페이징 메소드. p_type은 진행중 프로젝트 오픈예정 등을 나누기 위해 Criteria에 int로 만듬 1:진행중 2:종료된프로젝트 3: 4: -->
+	<select id="getListWithPaging" resultType="com.hm.project.domain.ProjectVO">
+		<![CDATA[
+		SELECT project_num,
+			   category,
+			   title_image,
+			   simple_content,
+			   company,
+			   current_invest,
+			   achive_invest,
+			   project_start,
+			   project_end,
+			   project_distinct
+	    FROM (
+	    	  SELECT /*+INDEX_DESC(pr_project xpkpr_project) */
+	    	   rownum rn,
+	    	   project_num,
+			   category,
+			   title_image,
+			   simple_content,
+			   company,
+			   current_invest,
+			   achive_invest,
+			   project_start,
+			   project_end,
+			   project_distinct
+	    	  FROM pr_project
+	    	  WHERE rownum <= #{pageNum} * #{amount}
+		]]>
+		<include refid = "criteria"></include>
+            <choose>
+                <when test="p_type == 'ongoing'.toString()">
+                   	<![CDATA[
+              			AND   project_distinct = 'ongoing' AND ((project_start <= sysdate AND project_end > sysdate) AND category NOT IN('集まり','共演','ソーシャル','ホビー','本'))
+            	   	]]>
+                </when>
+                <when test="p_type == 'end'.toString()">
+                	<![CDATA[
+                    	AND  (project_distinct = 'ongoing' AND project_end < sysdate)
+                	]]>
+                </when>
+                <when test="p_type == 'open'.toString()">
+             		<![CDATA[
+              			AND (project_distinct = 'ongoing' AND project_start > sysdate)
+             		]]>
+           		</when>
+           		<when test="p_type == 'culture'.toString()">
+             		<![CDATA[
+              			AND ((project_distinct = 'ongoing' AND (project_start <= sysdate AND project_end > sysdate)) AND category IN('集まり','共演','ソーシャル','ホビー','本'))
+             		]]>
+           		</when>
+            </choose>
+		)
+		<![CDATA[
+		WHERE rn > (#{pageNum} -1) * #{amount}
+		]]>
+	</select>
+	
+	<select id="getList" resultType="com.hm.project.domain.ProjectVO">
+		<![CDATA[
+			SELECT * 
+			FROM    ]]>
+				(SELECT ROW_NUMBER() OVER (ORDER BY
+				<if test="p_type != '0'.toString()">current_invest </if>
+				<if test="p_type == '0'.toString()">project_start </if> 
+				 DESC) rownums,tp.*
+				 FROM pr_project tp
+			<![CDATA[
+				 WHERE 	project_distinct = 'ongoing' 
+				 AND (project_start <= sysdate AND project_end > sysdate)) t
+				　WHERE t.rownums <= 5
+			]]>
+			<if test="p_type == 'culture'.toString()">
+				AND category IN('集まり','共演','ソーシャル','ホビー','本')  
+			</if>
+	</select>
+	
+	<select id="home_slide" resultType="com.hm.project.domain.ProjectVO">
+		<![CDATA[
+			SELECT  rownum, 
+					a.project_num, 
+					a.title_image
+			FROM
+				(
+				   SELECT 	project_num, 
+				   			title_image
+				   FROM   	pr_project
+				   WHERE   (project_distinct = 'ongoing' AND (project_start <= sysdate AND project_end > sysdate))
+				   ORDER BY DBMS_RANDOM.random()
+				) a
+			WHERE rownum <= 5
+			]]>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO pr_project(project_num,
+						  category,
+						  title_image,
+						  simple_content, 
+						  detail_content,
+						  phone,
+						  userid,
+						  current_invest,
+						  achive_invest,
+						  attach_1,
+						  attach_2,
+						  attach_3,
+						  company,
+						  contents_image1,
+						  contents_image2,
+						  project_distinct)
+		VALUES (SEQ_PROJECT.NEXTVAL,
+		        #{category}, 
+		        #{title_image},
+		        #{simple_content}, 
+		        #{detail_content},
+		        #{phone}, 
+		        #{userid},
+		        #{current_invest},
+		        #{achive_invest},
+		        #{attach_1},
+		        #{attach_2},
+		        #{attach_3},
+		        #{company},
+		        #{contents_image1},
+		        #{contents_image2},
+		        'standBy')
+	</insert>
+	
+	
+	
+	<insert id="insertSelectKey">
+
+		<selectKey keyProperty="project_num" order="BEFORE"
+			resultType="long">
+			SELECT SEQ_PROJECT.NEXTVAL FROM dual 
+		</selectKey>
+	<!-- 컨트롤 쉬프트 x = 대문자로 변환, 컨트롤 쉬프트 y 소문자 변환 -->
+		INSERT INTO pr_project(
+						  project_num,
+		   				  category,
+		   				  simple_content,
+		   				  phone,
+		   				  achive_invest,
+		   				  title_image,
+		   				  attach_1,
+		   				  project_start,
+		   				  project_end,
+		   				  userid,
+						  company,
+						  contents_image1,
+						  contents_image2,
+						  attach_2,
+						  attach_3,
+						  detail_content,
+						  project_distinct  
+						  )
+		VALUES (#{project_num},
+		        #{category}, 
+		        #{simple_content}, 
+		        #{phone},
+		        #{achive_invest},
+		        #{title_image},
+		        #{attach_1},
+		        #{project_start},
+		        #{project_end},
+		   		#{userid},
+		   		#{company},
+		   		#{contents_image1},
+		        #{contents_image2},
+		        #{attach_2},
+		        #{attach_3},
+		        #{detail_content},
+		        'standBy'
+		        )
+	</insert>
+	
+	
+	<!-- select -->
+	<select id="read" resultType = "com.hm.project.domain.ProjectVO">
+		SELECT 	p.*,
+				t.address,
+				t.profile_image,
+				t.self_introduce
+		FROM 	pr_project p,
+				(SELECT m.address,
+						m.profile_image,
+						m.userid,
+						m.self_introduce
+				 FROM	pr_member m,
+				 		pr_project p2
+				 WHERE  p2.userid = m.userid
+				 AND	p2.project_num = #{project_num}) t
+		WHERE 	p.project_num = #{project_num}
+		AND		p.userid = t.userid
+	</select>
+
+	
+	
+	<!-- delete -->
+	<delete id="delete">
+		delete from pr_project where project_num = #{project_num}
+	</delete>
+	
+	
+	<delete id="state_change">
+		UPDATE pr_project SET project_distinct = 'remove_standBy'
+		where project_num = #{project_num}
+	</delete>
+	
+		<!-- update -->
+	<update id="update">
+		UPDATE pr_project SET project_num = #{project_num},
+							  	 category = #{category},
+							 	 title_image = #{title_image},
+							  	 simple_content = #{simple_content},
+							  	 detail_content = #{detail_content},
+							  	 phone = #{phone},
+							  	 attach_1 = #{attach_1},
+							  	 attach_2 = #{attach_2},
+							  	 attach_3 = #{attach_3},
+							  	 company = #{company},
+							  	 contents_image1 = #{contents_image1},
+							  	 contents_image2 = #{contents_image2},
+							  	 project_modified = sysdate
+							  	 WHERE project_num = #{project_num}
+	</update>
+	
+	
+	<select id="getTotalCount" resultType="int">
+	<![CDATA[
+		SELECT count(*) 
+		FROM pr_project
+		WHERE project_num > 0
+		]]>
+	</select>
+	
+	<select id="project_getTotalCount" resultType="int">
+	<![CDATA[
+		SELECT count(*) 
+		FROM pr_project
+		WHERE project_num > 0
+		
+		]]>
+		<include refid = "criteria"></include>
+       	<choose>
+           <when test="p_type == 'ongoing'.toString()">
+            <![CDATA[
+              AND   project_distinct = 'ongoing' AND ((project_start <= sysdate AND project_end > sysdate) AND category NOT IN('集まり','共演','ソーシャル','ホビー','本'))
+            ]]>
+           </when>
+           <when test="p_type == 'end'.toString()">
+             <![CDATA[
+              AND  project_distinct = 'ongoing' AND (project_end < sysdate)
+              ]]>
+           </when>
+           <when test="p_type == 'open'.toString()">
+             <![CDATA[
+              AND  project_distinct = 'ongoing' AND (project_start > sysdate)
+              ]]>
+           </when>
+           <when test="p_type == 'culture'.toString()">
+             <![CDATA[
+              	AND ((project_distinct = 'ongoing' AND (project_start <= sysdate AND project_end > sysdate)) AND category IN('集まり','共演','ソーシャル','ホビー','本'))
+             ]]>
+           </when>
+        </choose>
+		
+	</select>
+	
+	<select id="getHomeOpenProject" resultType="com.hm.project.domain.ProjectVO">
+	<![CDATA[
+		SELECT	P.project_num, 
+				P.title_image, 
+				P.simple_content, 
+				P.project_start, 
+				P.project_end
+		FROM	
+		(
+			SELECT  TO_CHAR(PROJECT_START,'YYYY') startYear, 
+					PROJECT_NUM, 
+					TITLE_IMAGE, 
+					SIMPLE_CONTENT, 
+					PROJECT_START, 
+					PROJECT_END
+			FROM   pr_PROJECT
+			WHERE   PROJECT_DISTINCT = 'ongoing'
+			AND      PROJECT_START > SYSDATE
+			ORDER BY DBMS_RANDOM.random()
+		)	P
+		WHERE	P.startYear = EXTRACT(YEAR FROM SYSDATE)
+		AND		ROWNUM < 5
+	]]>
+	</select>
+	
+</mapper>
